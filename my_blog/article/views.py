@@ -4,7 +4,7 @@ import markdown
 from django.http import HttpResponse
 from .form import ArticlePostForm
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import login_required
 
 def article_list(request):
     articles = ArticlePost.objects.all()
@@ -27,6 +27,8 @@ def article_detail(request, id):
     context = { 'article': article }
     return render(request, 'article/detail.html', context)
 
+
+@login_required(login_url='/userprofile/login/')
 def article_create(request):
     if request.method == "POST":
         artcle_post_form = ArticlePostForm(data=request.POST)
