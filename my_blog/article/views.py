@@ -5,6 +5,8 @@ from django.http import HttpResponse
 from .form import ArticlePostForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
 
 def article_list(request):
     articles = ArticlePost.objects.all()
@@ -44,6 +46,7 @@ def article_create(request):
         context = {'article_post_form': artcle_post_form}
         return render(request, 'article/create.html', context)
 
+
 def article_delete(author, id):
     article = ArticlePost.objects.get(id=id)
     article.delete()
@@ -65,3 +68,13 @@ def article_update(request, id):
         article_post_form = ArticlePostForm()
         context = {'article':article, 'article_post_form':article_post_form}
         return render(request, 'article/update.html', context)
+
+
+def article_list(request):
+    article_list = ArticlePost.objects.all()
+    paginator = Paginator(article_list, 1)
+    page = request.GET.get('page')
+    articles = paginator.get_page(page)
+
+    context = {'articles':articles}
+    return render(request, 'article/list.html', context)
